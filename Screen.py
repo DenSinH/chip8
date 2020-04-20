@@ -25,19 +25,17 @@ class Screen(object):
 
     def draw(self, bs, pos):
 
-        collision = False
+        expanded = np.unpackbits(np.array([bs]), axis=0).T
+        section = np.meshgrid(
+            (pos[0] + np.arange(8)) % 64,
+            (pos[1] + np.arange(len(bs))) % 32
+        )
 
-        dy = 0
-        for byte in bs:
-            dx = 0
-            for bit in "{0:b}".format(byte).rjust(8, "0"):
+        collision = np.any(np.bitwise_and(
+            self.pixels[section], expanded
+        ))
 
-                if self.pixels[(pos[0] + dx) % 64, (pos[1] + dy) % 32] and int(bit):
-                    collision = True
-
-                self.pixels[(pos[0] + dx) % 64, (pos[1] + dy) % 32] ^= int(bit)
-                dx += 1
-            dy += 1
+        self.pixels[section] = np.bitwise_xor(self.pixels[section], expanded)
 
         surface = pygame.surfarray.make_surface(255 * self.pixels.astype(int))
 

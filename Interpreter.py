@@ -110,12 +110,13 @@ class Interpreter(object):
     def run(self):
 
         while True:
-            self.handle_events()
 
             self.execute()
             self.cycle = (self.cycle + 1) % self.clock_speed
 
             if self.cycle % 60 == 0:
+                self.handle_events()
+
                 if np.any(self.dt):
                     self.dt -= 1
 
