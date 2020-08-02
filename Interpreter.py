@@ -194,8 +194,8 @@ class Interpreter(object):
 
             # ADD
             elif instruction & 0x000f == 0x0004:
-                self.registers[x] += self.registers[y]
                 self.registers[0xf] = int(self.registers[x]) + int(self.registers[y]) > 255
+                self.registers[x] += self.registers[y]
 
             # SUB
             elif instruction & 0x000f == 0x0005:
